@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 //Wave function collapse algorithm
 public class Main {
-    static final int WIDTH = 10, HEIGHT = 5;
+    static final int WIDTH = 20, HEIGHT = 15;
 
     static Grid mainGrid;
     static ArrayList<GridSpace> entropyGrid;
@@ -17,12 +17,27 @@ public class Main {
         totalTiles = WIDTH * HEIGHT;
         collapsedTiles = 0;
 
+        runWFC();
+        mainGrid.window.setVisible(true);
+
+        mainGrid.window.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE) {
+                    mainGrid.clearGrid();
+                    collapsedTiles = 0;
+                    runWFC();
+                    mainGrid.window.repaint();
+                }
+            }
+        });
+    }
+
+    public static void runWFC() {
         while (collapsedTiles < totalTiles) {
             sortLowestEntropy();
             collapseLowestEntropy();
             recalculateEntropy();
         }
-        mainGrid.print();
     }
 
     public static void sortLowestEntropy() {
