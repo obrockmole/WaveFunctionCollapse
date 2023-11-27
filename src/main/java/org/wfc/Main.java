@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 //Wave function collapse algorithm
 public class Main {
-    static final int WIDTH = 20, HEIGHT = 15;
+    static final int WIDTH = 100, HEIGHT = 50;
 
     static Grid mainGrid;
     static ArrayList<GridSpace> entropyGrid;

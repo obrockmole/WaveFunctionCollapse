@@ -10,7 +10,7 @@ public class Grid {
     public Grid(int width, int height) {
         gridSpaces = new GridSpace[height][width];
         window = new JFrame();
-        window.setSize(width * 50 + 16, height * 50 + 39);
+        window.setSize(width * 10, height * 10);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
 

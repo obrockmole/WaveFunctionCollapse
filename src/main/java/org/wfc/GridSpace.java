@@ -17,8 +17,8 @@ public class GridSpace {
         this.indexY = indexY;
 
         panel = new JPanel();
-        panel.setSize(50, 50);
-        panel.setLocation(indexX * 50, indexY * 50);
+        panel.setSize(10, 10);
+        panel.setLocation(indexX * 10, indexY * 10);
         panel.setBackground(new java.awt.Color(255, 255, 255));
         panel.setVisible(true);
     }
