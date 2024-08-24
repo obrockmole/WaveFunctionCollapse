@@ -1,48 +1,12 @@
 package org.wfc;
 
-import java.awt.*;
-
 public class Tile {
-    public Rules rules;
-    public Color color;
-    public String stringColor;
+    public int[] north, south, east, west;
 
-    public Tile(Color color, String stringColor, Rules rules) {
-        this.color = color;
-        this.stringColor = stringColor;
-        this.rules = rules;
-    }
-
-    public void print() {
-        System.out.print(stringColor + "█ " + "\u001B[0m");
-    }
-}
-
-class Rules {
-    public int[] up;
-    public int[] down;
-    public int[] left;
-    public int[] right;
-
-    public Rules(int[] up, int[] down, int[] left, int[] right) {
-        this.up = up;
-        this.down = down;
-        this.left = left;
-        this.right = right;
-    }
-}
-
-enum Tiles {
-    WATER(new Tile(new Color(0, 200, 255), "\u001B[34m", new Rules(new int[]{0, 1}, new int[]{0, 1}, new int[]{0, 1}, new int[]{0, 1})), 0),
-    SAND(new Tile(new Color(255, 220, 140), "\u001B[33m", new Rules(new int[]{0, 1, 2}, new int[]{0, 1, 2}, new int[]{0, 1, 2}, new int[]{0, 1, 2})), 1),
-    GRASS(new Tile(new Color(0, 200, 60), "\u001B[32m", new Rules(new int[]{1, 2, 3}, new int[]{1, 2, 3}, new int[]{1, 2, 3}, new int[]{1, 2, 3})), 2),
-    FOREST(new Tile(new Color(0, 120, 30), "\u001B[92m", new Rules(new int[]{2, 3}, new int[]{2, 3}, new int[]{2, 3}, new int[]{2, 3})), 3);
-
-    public final Tile tile;
-    public final int index;
-
-    Tiles(Tile tile, int index) {
-        this.tile = tile;
-        this.index = index;
+    public Tile(int[] north, int[] south, int[] east, int[] west) {
+        this.north = north;
+        this.south = south;
+        this.east = east;
+        this.west = west;
     }
 }

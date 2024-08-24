@@ -40,3 +40,9 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+.idea
+*.class
+*.xml
+*.iml
+/wfc/src/main/generations/
