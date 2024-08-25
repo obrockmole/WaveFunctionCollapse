@@ -10,7 +10,7 @@ public class Main {
         wfc = new WaveFunctionCollapse(WIDTH, HEIGHT, Tiles.values());
         wfc.start();
 
-        while (wfc.getIterations() < wfc.width * wfc.height) {
+        while (wfc.getIterations() < wfc.getWidth() * wfc.getHeight()) {
             wfc.checkLowestEntropy();
         }
 

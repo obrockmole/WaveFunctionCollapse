@@ -11,9 +11,9 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class WaveFunctionCollapse {
-    public int width, height;
-    public ArrayList<Cell> grid;
-    public int iterations;
+    private int width, height;
+    private int iterations;
+    private ArrayList<Cell> grid;
 
     private enum Direction {
         NORTH, SOUTH, EAST, WEST
@@ -31,6 +31,22 @@ public class WaveFunctionCollapse {
         }
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getIterations() {
+        return iterations;
+    }
+
+    public ArrayList<Cell> getGrid() {
+        return grid;
+    }
+
     public void start() {
         checkLowestEntropy();
     }
@@ -38,39 +54,39 @@ public class WaveFunctionCollapse {
     public void checkLowestEntropy() {
         ArrayList<Cell> entropyGrid = new ArrayList<>(grid);
 
-        entropyGrid.removeIf(cell -> cell.collapsed || cell.possibleTiles.length == 1);
+        entropyGrid.removeIf(cell -> cell.isCollapsed() || cell.getPossibleTiles().length == 1);
         if (entropyGrid.isEmpty()) {
             iterations = width * height;
             return;
         }
 
-        entropyGrid.sort(Comparator.comparingInt(cell -> cell.possibleTiles.length));
-        entropyGrid.removeIf(cell -> cell.possibleTiles.length > entropyGrid.get(0).possibleTiles.length);
+        entropyGrid.sort(Comparator.comparingInt(cell -> cell.getPossibleTiles().length));
+        entropyGrid.removeIf(cell -> cell.getPossibleTiles().length > entropyGrid.get(0).getPossibleTiles().length);
 
         collapseCells(entropyGrid);
     }
 
     public void collapseCells(ArrayList<Cell> entropyGrid) {
         Cell randomCell = entropyGrid.get((int) (Math.random() * entropyGrid.size()));
-        randomCell.collapse(randomCell.possibleTiles[(int) (Math.random() * randomCell.possibleTiles.length)]);
+        randomCell.collapse(randomCell.getPossibleTiles()[(int) (Math.random() * randomCell.getPossibleTiles().length)]);
         updateEntropy();
     }
 
     private void updateEntropy() {
         ArrayList<Cell> newGrid = new ArrayList<>(grid);
         for (Cell cell : newGrid) {
-            if (!cell.collapsed) {
+            if (!cell.isCollapsed()) {
                 ArrayList<Tiles> validTileOptions = new ArrayList<>(Arrays.asList(Tiles.values()));
                 for (Direction direction : Direction.values()) {
                     Cell neighborCell = getNeighborCell(cell, direction);
-                    if (neighborCell != null && neighborCell.collapsed) {
+                    if (neighborCell != null && neighborCell.isCollapsed()) {
                         ArrayList<Tiles> viableTiles = getViableTiles(neighborCell, direction);
                         validTileOptions.retainAll(!viableTiles.isEmpty() ? viableTiles : validTileOptions);
                     }
                 }
 
                 cell.setPossibleTiles(validTileOptions.toArray(new Tiles[0]));
-                if (cell.possibleTiles.length == 1) {
+                if (cell.getPossibleTiles().length == 1) {
                     cell.collapse(validTileOptions.getFirst());
                     updateEntropy();
                 }
@@ -82,8 +98,8 @@ public class WaveFunctionCollapse {
     }
 
     private Cell getNeighborCell(Cell cell, Direction direction) {
-        int x = cell.x;
-        int y = cell.y;
+        int x = cell.getX();
+        int y = cell.getY();
         switch (direction) {
             case NORTH:
                 y--;
@@ -106,10 +122,10 @@ public class WaveFunctionCollapse {
 
     private ArrayList<Tiles> getViableTiles(Cell cell, Direction direction) {
         int[] viableTilesInt = switch (direction) {
-            case NORTH -> cell.possibleTiles[0].tile.south;
-            case SOUTH -> cell.possibleTiles[0].tile.north;
-            case EAST -> cell.possibleTiles[0].tile.west;
-            case WEST -> cell.possibleTiles[0].tile.east;
+            case NORTH -> cell.getPossibleTiles()[0].getTile().getSouth();
+            case SOUTH -> cell.getPossibleTiles()[0].getTile().getNorth();
+            case EAST -> cell.getPossibleTiles()[0].getTile().getWest();
+            case WEST -> cell.getPossibleTiles()[0].getTile().getEast();
         };
 
         return Arrays.stream(viableTilesInt)
@@ -117,17 +133,13 @@ public class WaveFunctionCollapse {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public int getIterations() {
-        return iterations;
-    }
-
     public void printGrid() {
         StringBuilder output = new StringBuilder();
 
         for (Cell cell : grid) {
-            output.append(cell.collapsed ? cell.possibleTiles[0].index : "X").append(" ");
+            output.append(cell.isCollapsed() ? cell.getPossibleTiles()[0].getIndex() : "X").append(" ");
 
-            if (cell.x == width - 1)
+            if (cell.getX() == width - 1)
                 output.append("\n");
         }
 
@@ -141,9 +153,9 @@ public class WaveFunctionCollapse {
 
         try (FileWriter writer = new FileWriter(fileName + ".txt")) {
             for (Cell cell : grid) {
-                writer.write(String.valueOf(cell.collapsed ? cell.possibleTiles[0].index : "X"));
+                writer.write(String.valueOf(cell.isCollapsed() ? cell.getPossibleTiles()[0].getIndex() : "X"));
                 writer.write(" ");
-                if (cell.x == width - 1)
+                if (cell.getX() == width - 1)
                     writer.write("\n");
             }
         } catch (IOException e) {

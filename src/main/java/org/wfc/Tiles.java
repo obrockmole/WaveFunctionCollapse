@@ -2,7 +2,7 @@ package org.wfc;
 
 enum Tiles {
     //No connections
-    BLANK(new Tile(new int[]{0, 3, 5, 6}, new int[]{0, 1, 2, 3}, new int[]{0, 2, 4, 6}, new int[]{0, 1, 4, 5}), 0), //Index 0
+    BLANK(new Tile(new int[]{0, 4, 6, 7}, new int[]{0, 2, 3, 4}, new int[]{0, 3, 5, 7}, new int[]{0, 2, 5, 6}), 0), //Index 0
     //Connection on all 4 sides
     CROSS(new Tile(new int[]{1, 2, 3, 5}, new int[]{1, 5, 6, 7}, new int[]{1, 2, 4, 6}, new int[]{1, 3, 4, 7}), 1), //Index 1
     //Connection on south, west sides
@@ -18,11 +18,19 @@ enum Tiles {
     //Connection on north, east sides
     UP_RIGHT(new Tile(new int[]{1, 2, 3, 5}, new int[]{0, 2, 3, 4}, new int[]{1, 2, 4, 6}, new int[]{0, 2, 5, 6}), 7); //Index 7
 
-    public final Tile tile;
-    public final int index;
+    private final Tile tile;
+    private final int index;
 
     Tiles(Tile tile, int index) {
         this.tile = tile;
         this.index = index;
+    }
+
+    public Tile getTile() {
+        return tile;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }
