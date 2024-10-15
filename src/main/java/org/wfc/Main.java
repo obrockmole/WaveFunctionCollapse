@@ -15,6 +15,6 @@ public class Main {
         }
 
         wfc.printGrid();
-        wfc.saveGrid("src/main/generations/");
+//        wfc.saveGrid("src/main/generations/");
     }
 }

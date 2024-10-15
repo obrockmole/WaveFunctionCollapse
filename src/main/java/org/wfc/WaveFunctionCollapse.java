@@ -11,9 +11,9 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class WaveFunctionCollapse {
-    private int width, height;
+    private final int width, height;
     private int iterations;
-    private ArrayList<Cell> grid;
+    private final ArrayList<Cell> grid;
 
     private enum Direction {
         NORTH, SOUTH, EAST, WEST
@@ -61,7 +61,7 @@ public class WaveFunctionCollapse {
         }
 
         entropyGrid.sort(Comparator.comparingInt(cell -> cell.getPossibleTiles().length));
-        entropyGrid.removeIf(cell -> cell.getPossibleTiles().length > entropyGrid.get(0).getPossibleTiles().length);
+        entropyGrid.removeIf(cell -> cell.getPossibleTiles().length > entropyGrid.getFirst().getPossibleTiles().length);
 
         collapseCells(entropyGrid);
     }
@@ -92,6 +92,7 @@ public class WaveFunctionCollapse {
                 }
             }
         }
+
         grid.clear();
         grid.addAll(newGrid);
         iterations++;
@@ -100,32 +101,27 @@ public class WaveFunctionCollapse {
     private Cell getNeighborCell(Cell cell, Direction direction) {
         int x = cell.getX();
         int y = cell.getY();
+
         switch (direction) {
-            case NORTH:
-                y--;
-                break;
-            case SOUTH:
-                y++;
-                break;
-            case EAST:
-                x++;
-                break;
-            case WEST:
-                x--;
-                break;
+            case NORTH -> y--;
+            case SOUTH -> y++;
+            case EAST -> x++;
+            case WEST -> x--;
         }
+
         if (x < 0 || x >= width || y < 0 || y >= height) {
             return null;
         }
+
         return grid.get(y * width + x);
     }
 
     private ArrayList<Tiles> getViableTiles(Cell cell, Direction direction) {
         int[] viableTilesInt = switch (direction) {
-            case NORTH -> cell.getPossibleTiles()[0].getTile().getSouth();
-            case SOUTH -> cell.getPossibleTiles()[0].getTile().getNorth();
-            case EAST -> cell.getPossibleTiles()[0].getTile().getWest();
-            case WEST -> cell.getPossibleTiles()[0].getTile().getEast();
+            case NORTH -> cell.getPossibleTiles()[0].getTile().south();
+            case SOUTH -> cell.getPossibleTiles()[0].getTile().north();
+            case EAST -> cell.getPossibleTiles()[0].getTile().west();
+            case WEST -> cell.getPossibleTiles()[0].getTile().east();
         };
 
         return Arrays.stream(viableTilesInt)
@@ -147,19 +143,22 @@ public class WaveFunctionCollapse {
     }
 
     public void saveGrid(String directory) {
-        directory += LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM_dd_yyyy_HH-mm")) + "/";
-        new File(directory).mkdirs();
-        String fileName = directory + "wfc_" + width + "x_" + height + "y";
+        directory += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH-mm")) + "/";
+        if (new File(directory).mkdirs()) {
+            String fileName = directory + "wfc_" + width + "x_" + height + "y";
 
-        try (FileWriter writer = new FileWriter(fileName + ".txt")) {
-            for (Cell cell : grid) {
-                writer.write(String.valueOf(cell.isCollapsed() ? cell.getPossibleTiles()[0].getIndex() : "X"));
-                writer.write(" ");
-                if (cell.getX() == width - 1)
-                    writer.write("\n");
+            try (FileWriter writer = new FileWriter(fileName + ".txt")) {
+                for (Cell cell : grid) {
+                    writer.write(String.valueOf(cell.isCollapsed() ? cell.getPossibleTiles()[0].getIndex() : "X"));
+                    writer.write(" ");
+                    if (cell.getX() == width - 1)
+                        writer.write("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("Failed to create directory");
         }
     }
 }
